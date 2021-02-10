@@ -13,7 +13,7 @@ class ApartmentListRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,13 @@ class ApartmentListRequest extends FormRequest
     public function rules()
     {
         return [
-            ''
+            'name' => 'string|max:255',
+            'price_from' => 'integer',
+            'price_to' => 'integer',
+            'bedrooms' => 'integer',
+            'bathrooms' => 'integer',
+            'storeys' => 'integer',
+            'garages' => 'integer',
         ];
     }
 }
