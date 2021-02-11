@@ -129,7 +129,7 @@
         <el-pagination
             @size-change="fetchHouses"
             @current-change="fetchHouses"
-            :current-page.sync="currentPage"
+            :current-page.sync="query.page"
             :page-sizes="[10, 25, 50, 100]"
             :page-size.sync="query.per_page"
             layout="sizes, prev, pager, next"
@@ -167,15 +167,6 @@ export default {
   },
 
   computed: {
-    currentPage: {
-      get: function() {
-        return parseInt(this.page)
-      },
-      set: function(value) {
-        this.query.page = parseInt(value)
-      }
-
-    },
     queryString() {
       const res = {...this.query, price_from: this.query.price[0], price_to: this.query.price[1]}
       delete(res.price)
@@ -203,14 +194,16 @@ export default {
     }
   },
 
-  mounted () {
+  created () {
     Object.entries(qs.parse(location.search.substr(1))).forEach(([name, value]) => {
       if (name === 'page') {
-        this.currentPage = value
-      } else {
-        this.query = {...this.query, [name]: value}
+        value = parseInt(value)
       }
+      this.query = {...this.query, [name]: value}
     })
+  },
+
+  mounted() {
     this.fetchHouses()
   }
 }
