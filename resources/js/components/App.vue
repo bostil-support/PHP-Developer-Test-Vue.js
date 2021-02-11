@@ -95,11 +95,18 @@
           >
           </el-slider>
         </div>
-        <div class="criteria">
-          <el-button @click="fetchHouses" type="primary">Apply</el-button>
-        </div>
       </el-aside>
       <el-main>
+        <el-pagination
+                v-if="totalHouses"
+                @size-change="fetchHouses"
+                @current-change="fetchHouses"
+                :current-page.sync="query.page"
+                :page-sizes="[10, 25, 50, 100]"
+                :page-size.sync="query.per_page"
+                layout="sizes, prev, pager, next"
+                :total="totalHouses">
+        </el-pagination>
         <el-table
             v-loading="fetching"
             :data="houses"
@@ -152,8 +159,9 @@
     </el-container>
   </el-container>
 </template>
-<script>
 
+<script>
+  import { debounce } from 'lodash'
 export default {
   props: {
     filter: {
@@ -190,9 +198,10 @@ export default {
   watch: {
     query: {
       deep: true,
-      handler() {
+      handler: debounce(function () {
+        this.fetchHouses();
         history.replaceState(null, null, location.origin + `?${qs.stringify(this.query)}`)
-      }
+      }, 2000)
     }
   },
   methods: {
@@ -237,5 +246,9 @@ export default {
           font-style: italic;
         }
       }
+    }
+
+    .el-table {
+      margin: 15px 0;
     }
 </style>
