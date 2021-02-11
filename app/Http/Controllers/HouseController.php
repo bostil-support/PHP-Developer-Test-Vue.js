@@ -18,7 +18,7 @@ class HouseController extends Controller
     public function index(HouseListRequest $request): AnonymousResourceCollection
     {
         $apartments = House::filter($request)
-            ->paginate($request->query('per_page') ?? 10);
+            ->paginate($request->query('per_page') ?? 50);
 
         return HouseResource::collection($apartments);
     }

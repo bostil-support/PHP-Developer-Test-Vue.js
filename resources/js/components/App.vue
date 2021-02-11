@@ -4,79 +4,80 @@
       <div class="logo">House search</div>
     </el-header>
     <el-container>
-      <el-aside width="320px" class="filter">
+      <el-aside width="400px" class="filter">
         <div class="criteria">
           <label>
             <span class="caption">Name</span>
-            <el-input
-                placeholder="Please Input"
-                v-model="query.name">
-            </el-input>
           </label>
+          <el-input
+              placeholder="Please Input"
+              v-model="query.name">
+          </el-input>
         </div>
         <div class="criteria">
           <label>
             <span class="caption">Bedrooms</span>
-            <el-select
-                v-model="query.bedrooms"
-                multiple
-                placeholder="Choose count bedrooms">
-              <el-option
-                  v-for="(bedroomsCount, index) in filter.bedrooms"
-                  :key="index"
-                  :label="bedroomsCount"
-                  :value="bedroomsCount">
-              </el-option>
-            </el-select>
+
           </label>
+          <el-select
+              v-model="query.bedrooms"
+              multiple
+              placeholder="Choose count bedrooms">
+            <el-option
+                v-for="(bedroomsCount, index) in filter.bedrooms"
+                :key="index"
+                :label="bedroomsCount"
+                :value="bedroomsCount">
+            </el-option>
+          </el-select>
         </div>
         <div class="criteria">
           <label>
             <span class="caption">Bathrooms</span>
-            <el-select
-                v-model="query.bathrooms"
-                multiple
-                placeholder="Choose count bathrooms">
-              <el-option
-                  v-for="(bathroomsCount, index) in filter.bathrooms"
-                  :key="index"
-                  :label="bathroomsCount"
-                  :value="bathroomsCount">
-              </el-option>
-            </el-select>
           </label>
+          <el-select
+              v-model="query.bathrooms"
+              multiple
+              placeholder="Choose count bathrooms">
+            <el-option
+                v-for="(bathroomsCount, index) in filter.bathrooms"
+                :key="index"
+                :label="bathroomsCount"
+                :value="bathroomsCount">
+            </el-option>
+          </el-select>
         </div>
         <div class="criteria">
           <label>
             <span class="caption">Storeys</span>
-            <el-select
-                v-model="query.storeys"
-                multiple
-                placeholder="Choose count storeys">
-              <el-option
-                  v-for="(storeysCount, index) in filter.storeys"
-                  :key="index"
-                  :label="storeysCount"
-                  :value="storeysCount">
-              </el-option>
-            </el-select>
           </label>
+          <el-select
+              v-model="query.storeys"
+              multiple
+              placeholder="Choose count storeys">
+            <el-option
+                v-for="(storeysCount, index) in filter.storeys"
+                :key="index"
+                :label="storeysCount"
+                :value="storeysCount">
+            </el-option>
+          </el-select>
         </div>
         <div class="criteria">
           <label>
             <span class="caption">Garages</span>
-            <el-select
-                v-model="query.garages"
-                multiple
-                placeholder="Choose count garages">
-              <el-option
-                  v-for="(garagesCount, index) in filter.garages"
-                  :key="index"
-                  :label="garagesCount"
-                  :value="garagesCount">
-              </el-option>
-            </el-select>
           </label>
+          <el-select
+              v-model="query.garages"
+              multiple
+              placeholder="Choose count garages">
+            <el-option
+                v-for="(garagesCount, index) in filter.garages"
+                :key="index"
+                :label="garagesCount"
+                :value="garagesCount">
+            </el-option>
+          </el-select>
         </div>
         <div class="criteria">
           <label>
@@ -84,15 +85,15 @@
                 <span class="caption__price--title">Price</span>
                 <span class="caption__price--value">{{ query.price[0] }} - {{ query.price[1] }}</span>
             </span>
-            <el-slider
-                v-model="query.price"
-                range
-                :show-tooltip="false"
-                :min="filter.min_price"
-                :max="filter.max_price"
-            >
-            </el-slider>
           </label>
+          <el-slider
+              v-model="query.price"
+              range
+              :show-tooltip="false"
+              :min="filter.min_price"
+              :max="filter.max_price"
+          >
+          </el-slider>
         </div>
         <div class="criteria">
           <el-button @click="fetchHouses" type="primary">Apply</el-button>
@@ -172,7 +173,7 @@ export default {
         order_by: undefined,
         sort: undefined,
         page: undefined,
-        per_page: undefined,
+        per_page: 50,
       },
       fetching: true,
       houses: [],
