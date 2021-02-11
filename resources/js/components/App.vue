@@ -101,7 +101,7 @@
                 v-if="totalHouses"
                 @size-change="fetchHouses"
                 @current-change="fetchHouses"
-                :current-page.sync="query.page"
+                :current-page.sync="page"
                 :page-sizes="[10, 25, 50, 100]"
                 :page-size.sync="query.per_page"
                 layout="sizes, prev, pager, next"
@@ -149,7 +149,7 @@
             v-if="totalHouses"
             @size-change="fetchHouses"
             @current-change="fetchHouses"
-            :current-page.sync="query.page"
+            :current-page.sync="page"
             :page-sizes="[10, 25, 50, 100]"
             :page-size.sync="query.per_page"
             layout="sizes, prev, pager, next"
@@ -180,9 +180,9 @@ export default {
         price: [this.filter.min_price, this.filter.max_price],
         order_by: undefined,
         sort: undefined,
-        page: undefined,
         per_page: 50,
       },
+      page: undefined,
       fetching: true,
       houses: [],
       totalHouses: 0
@@ -190,7 +190,7 @@ export default {
   },
   computed: {
     queryString() {
-      const res = {...this.query, price_from: this.query.price[0], price_to: this.query.price[1]}
+      const res = {...this.query, price_from: this.query.price[0], price_to: this.query.price[1], page: this.page}
       delete(res.price)
       return qs.stringify(res)
     }
@@ -199,13 +199,13 @@ export default {
     query: {
       deep: true,
       handler: debounce(function () {
-        this.fetchHouses();
-        history.replaceState(null, null, location.origin + `?${qs.stringify(this.query)}`)
+        this.fetchHouses()
       }, 1000)
     }
   },
   methods: {
     fetchHouses() {
+      history.replaceState(null, null, location.origin + '?' + this.queryString)
       this.fetching = true
       axios.get('/api/houses?' + this.queryString)
       .then(({ data }) => {
@@ -222,10 +222,17 @@ export default {
   },
   created () {
     Object.entries(qs.parse(location.search.substr(1))).forEach(([name, value]) => {
-      if (name === 'page' || name === 'per_page') {
-        value = parseInt(value)
+      if (name === 'page') {
+        this.page = parseInt(value)
+      } else if (name === 'per_page') {
+        this.query[name] = parseInt(value)
+      } else if (name === 'price_from') {
+        this.query.price[0] = parseInt(value)
+      } else if (name === 'price_to') {
+        this.query.price[1] = parseInt(value)
+      } else {
+        this.query[name] = value
       }
-      this.query = {...this.query, [name]: value}
     })
   },
   mounted() {
