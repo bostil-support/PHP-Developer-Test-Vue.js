@@ -1,0 +1,51 @@
+.configs: &configs
+  repository: git@github.com:dronowar/desire_backend.git
+  git_tty: true
+  shared_files:
+    - .env
+
+production:
+  <<: *configs
+  shared_dirs:
+    - storage
+  writable_dirs:
+    - bootstrap/cache
+    - storage
+    - storage/app
+    - storage/app/public
+    - storage/app/uploads
+    - storage/framework
+    - storage/framework/cache
+    - storage/framework/sessions
+    - storage/framework/views
+    - storage/logs
+  hostname: host_ip
+  stage: production
+  user: host_user
+  http_user: www-data
+  branch: master
+  deploy_path: /path/to/project
+  keep_releases: 5
+
+test:
+  <<: *configs
+  shared_dirs:
+    - storage
+  writable_dirs:
+    - bootstrap/cache
+    - storage
+    - storage/app
+    - storage/app/public
+    - storage/app/uploads
+    - storage/framework
+    - storage/framework/cache
+    - storage/framework/sessions
+    - storage/framework/views
+    - storage/logs
+  hostname: 80.249.150.36
+  stage: test
+  user: manager
+  http_user: www-data
+  branch: develop
+  deploy_path: /var/www/desire-backend
+  keep_releases: 2
