@@ -4,8 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin \App\Models\Apartment */
-class ApartmentResource extends JsonResource
+/** @mixin \App\Models\House */
+class HouseResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

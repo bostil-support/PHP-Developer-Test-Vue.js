@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ApartmentController;
+use App\Http\Controllers\HouseController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('apartments', [ApartmentController::class, 'index']);
+Route::get('houses', [HouseController::class, 'index']);
