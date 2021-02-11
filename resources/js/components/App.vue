@@ -172,7 +172,7 @@ export default {
         return parseInt(this.page)
       },
       set: function(value) {
-        this.page = value
+        this.query.page = parseInt(value)
       }
 
     },
@@ -204,7 +204,13 @@ export default {
   },
 
   mounted () {
-    Object.entries(qs.parse(location.search.substr(1))).forEach(([name, values]) => this.query = {...this.query, [name]: values})
+    Object.entries(qs.parse(location.search.substr(1))).forEach(([name, value]) => {
+      if (name === 'page') {
+        this.currentPage = value
+      } else {
+        this.query = {...this.query, [name]: value}
+      }
+    })
     this.fetchHouses()
   }
 }
