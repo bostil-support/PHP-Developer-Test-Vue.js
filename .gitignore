@@ -20,3 +20,6 @@ supervisord.pid
 _ide_helper.php
 _ide_helper_models.php
 /public/mix-manifest.json
+/hosts.yml
+/.env.test
+/.env.prod
