@@ -201,7 +201,7 @@ export default {
       handler: debounce(function () {
         this.fetchHouses();
         history.replaceState(null, null, location.origin + `?${qs.stringify(this.query)}`)
-      }, 2000)
+      }, 1000)
     }
   },
   methods: {
