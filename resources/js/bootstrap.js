@@ -1,3 +1,4 @@
+window.qs = require('qs');
 window._ = require('lodash');
 
 /**

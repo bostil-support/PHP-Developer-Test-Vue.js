@@ -1,0 +1,28 @@
+header {
+  display: flex;
+  align-items: center;
+  .logo {
+    font-size: 30px;
+  }
+}
+
+aside {
+  padding: 20px;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+   .criteria {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+    .caption {
+      display: block;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+  }
+}
+
+main {
+  padding: 20px;
+}
