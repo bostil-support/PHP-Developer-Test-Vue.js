@@ -80,10 +80,14 @@
         </div>
         <div class="criteria">
           <label>
-            <span class="capition">Price</span>
+            <span class="caption caption__price">
+                <span class="caption__price--title">Price</span>
+                <span class="caption__price--value">{{ query.price[0] }} - {{ query.price[1] }}</span>
+            </span>
             <el-slider
                 v-model="query.price"
                 range
+                :show-tooltip="false"
                 :min="filter.min_price"
                 :max="filter.max_price"
             >
@@ -98,35 +102,43 @@
         <el-table
             v-loading="fetching"
             :data="houses"
+            @sort-change="applySorting"
             style="width: 100%">
           <el-table-column
               prop="name"
               label="Name"
+              sortable
               width="280">
           </el-table-column>
           <el-table-column
               prop="bedrooms"
               label="Bedrooms"
+              sortable
               width="180">
           </el-table-column>
           <el-table-column
               prop="bathrooms"
-              label="Bathrooms">
+              label="Bathrooms"
+              sortable>
           </el-table-column>
           <el-table-column
               prop="storeys"
-              label="Storeys">
+              label="Storeys"
+              sortable>
           </el-table-column>
           <el-table-column
               prop="garages"
-              label="Garages">
+              label="Garages"
+              sortable>
           </el-table-column>
           <el-table-column
               prop="price"
-              label="Price">
+              label="Price"
+              sortable>
           </el-table-column>
         </el-table>
         <el-pagination
+            v-if="totalHouses"
             @size-change="fetchHouses"
             @current-change="fetchHouses"
             :current-page.sync="query.page"
@@ -157,6 +169,8 @@ export default {
         storeys: [],
         garages: [],
         price: [this.filter.min_price, this.filter.max_price],
+        order_by: undefined,
+        sort: undefined,
         page: undefined,
         per_page: undefined,
       },
@@ -165,7 +179,6 @@ export default {
       totalHouses: 0
     }
   },
-
   computed: {
     queryString() {
       const res = {...this.query, price_from: this.query.price[0], price_to: this.query.price[1]}
@@ -173,7 +186,6 @@ export default {
       return qs.stringify(res)
     }
   },
-
   watch: {
     query: {
       deep: true,
@@ -182,7 +194,6 @@ export default {
       }
     }
   },
-
   methods: {
     fetchHouses() {
       this.fetching = true
@@ -191,21 +202,39 @@ export default {
         this.totalHouses = data.meta.total
         this.houses = data.data
       }).finally(() => this.fetching = false)
+    },
+    applySorting({column, prop, order}) {
+      this.query.order_by = order ? prop : undefined
+      this.query.sort = this.query.order_by ? (order === 'descending' ? 'desc' : 'asc') : undefined
+
+      this.fetchHouses()
     }
   },
-
   created () {
     Object.entries(qs.parse(location.search.substr(1))).forEach(([name, value]) => {
-      if (name === 'page') {
+      if (name === 'page' || name === 'per_page') {
         value = parseInt(value)
       }
       this.query = {...this.query, [name]: value}
     })
   },
-
   mounted() {
     this.fetchHouses()
   }
 }
 </script>
-?
+
+<style scoped lang="scss">
+    .caption {
+      &.caption__price {
+        display: flex;
+        justify-content: space-between;
+
+        .caption__price--value {
+          font-size: 15px;
+          font-weight: normal;
+          font-style: italic;
+        }
+      }
+    }
+</style>

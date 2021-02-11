@@ -22,7 +22,7 @@ class HouseFactory extends Factory
     public function definition()
     {
         return [
-            'name' => 'The ' . ucwords($this->faker->words(rand(1, 2), true)),
+            'name' => 'The ' . ucwords($this->faker->words(rand(2, 3), true)),
             'price' => rand(250000, 700000),
             'bedrooms' => rand(2, 5),
             'bathrooms' => rand(2, 4),
