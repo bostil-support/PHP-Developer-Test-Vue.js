@@ -20,7 +20,7 @@ class HouseFilter extends AbstractFilter
     public function name($value)
     {
         if (strlen($value) > 0) {
-            return $this->builder->where('name', 'like', "{$value}%");
+            return $this->builder->where('name', 'like', "%{$value}%");
         }
 
         return $this->builder;
@@ -28,10 +28,8 @@ class HouseFilter extends AbstractFilter
 
     public function bedrooms($value)
     {
-        $value = (int) $value;
-
-        if ($value > 0) {
-            return $this->builder->where('bedrooms', '=', $value);
+        if (is_array($value) && count($value)) {
+            return $this->builder->whereIn('bedrooms', $value);
         }
 
         return $this->builder;
@@ -39,10 +37,8 @@ class HouseFilter extends AbstractFilter
 
     public function bathrooms($value)
     {
-        $value = (int) $value;
-
-        if ($value > 0) {
-            return $this->builder->where('bathrooms', '=', $value);
+        if (is_array($value) && count($value)) {
+            return $this->builder->whereIn('bathrooms', $value);
         }
 
         return $this->builder;
@@ -50,10 +46,8 @@ class HouseFilter extends AbstractFilter
 
     public function storeys($value)
     {
-        $value = (int) $value;
-
-        if ($value > 0) {
-            return $this->builder->where('storeys', '=', $value);
+        if (is_array($value) && count($value)) {
+            return $this->builder->whereIn('storeys', $value);
         }
 
         return $this->builder;
@@ -61,10 +55,8 @@ class HouseFilter extends AbstractFilter
 
     public function garages($value)
     {
-        $value = (int) $value;
-
-        if ($value > 0) {
-            return $this->builder->where('garages', '=', $value);
+        if (is_array($value) && count($value)) {
+            return $this->builder->whereIn('garages', $value);
         }
 
         return $this->builder;

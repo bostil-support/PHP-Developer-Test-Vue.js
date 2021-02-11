@@ -24,13 +24,17 @@ class HouseListRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'string|max:255',
-            'price_from' => 'integer',
-            'price_to' => 'integer',
-            'bedrooms' => 'integer',
-            'bathrooms' => 'integer',
-            'storeys' => 'integer',
-            'garages' => 'integer',
+            'name' => 'nullable|string|max:255',
+            'price_from' => 'nullable|integer',
+            'price_to' => 'nullable|integer',
+            'bedrooms' => 'nullable|array',
+            'bedrooms.*' => 'integer',
+            'bathrooms' => 'nullable|array',
+            'bathrooms.*' => 'integer',
+            'storeys' => 'nullable|array',
+            'storeys.*' => 'integer',
+            'garages' => 'nullable|array',
+            'garages.*' => 'integer',
         ];
     }
 }
