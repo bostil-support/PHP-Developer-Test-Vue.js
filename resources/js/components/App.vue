@@ -83,11 +83,12 @@
           <label>
             <span class="caption caption__price">
                 <span class="caption__price--title">Price</span>
-                <span class="caption__price--value">{{ query.price[0] }} - {{ query.price[1] }}</span>
+                <span class="caption__price--value">{{ price[0] }} - {{ price[1] }}</span>
             </span>
           </label>
           <el-slider
-              v-model="query.price"
+              v-model="price"
+              @change="fetchHousesDebounce"
               range
               :show-tooltip="false"
               :min="filter.min_price"
@@ -98,62 +99,63 @@
       </el-aside>
       <el-main>
         <el-pagination
-                v-if="totalHouses"
+                v-if="meta.total"
                 @size-change="fetchHouses"
                 @current-change="fetchHouses"
                 :current-page.sync="page"
                 :page-sizes="[10, 25, 50, 100]"
-                :page-size.sync="query.per_page"
+                :page-size.sync="per_page"
                 layout="sizes, prev, pager, next"
-                :total="totalHouses">
+                :total="meta.total">
         </el-pagination>
         <el-table
             v-loading="fetching"
             :data="houses"
             @sort-change="applySorting"
+            :default-sort="{ prop: query.order_by, order: query.sort }"
             style="width: 100%">
           <el-table-column
               prop="name"
               label="Name"
-              sortable
+              sortable="custom"
               width="280">
           </el-table-column>
           <el-table-column
               prop="bedrooms"
               label="Bedrooms"
-              sortable
+              sortable="custom"
               width="180">
           </el-table-column>
           <el-table-column
               prop="bathrooms"
               label="Bathrooms"
-              sortable>
+              sortable="custom">
           </el-table-column>
           <el-table-column
               prop="storeys"
               label="Storeys"
-              sortable>
+              sortable="custom">
           </el-table-column>
           <el-table-column
               prop="garages"
               label="Garages"
-              sortable>
+              sortable="custom">
           </el-table-column>
           <el-table-column
               prop="price"
               label="Price"
-              sortable>
+              sortable="custom">
           </el-table-column>
         </el-table>
         <el-pagination
-            v-if="totalHouses"
+            v-if="meta.total"
             @size-change="fetchHouses"
             @current-change="fetchHouses"
             :current-page.sync="page"
             :page-sizes="[10, 25, 50, 100]"
-            :page-size.sync="query.per_page"
+            :page-size.sync="per_page"
             layout="sizes, prev, pager, next"
-            :total="totalHouses">
+            :total="meta.total">
         </el-pagination>
       </el-main>
     </el-container>
@@ -161,7 +163,7 @@
 </template>
 
 <script>
-  import { debounce } from 'lodash'
+import { debounce } from 'lodash'
 export default {
   props: {
     filter: {
@@ -172,52 +174,61 @@ export default {
   data() {
     return {
       query: {
-        name: undefined,
+        name: '',
         bedrooms: [],
         bathrooms: [],
         storeys: [],
         garages: [],
-        price: [this.filter.min_price, this.filter.max_price],
-        order_by: undefined,
-        sort: undefined,
-        per_page: 50,
+        order_by: '',
+        sort: '',
       },
-      page: undefined,
+      price: [this.filter.min_price, this.filter.max_price],
+      page: 1,
+      per_page: 50,
       fetching: true,
       houses: [],
-      totalHouses: 0
+      meta: {}
     }
   },
   computed: {
     queryString() {
-      const res = {...this.query, price_from: this.query.price[0], price_to: this.query.price[1], page: this.page}
-      delete(res.price)
+      const res = {
+        ...this.query,
+        price_from: this.price[0],
+        price_to: this.price[1],
+        page: this.page,
+        per_page: this.per_page
+      }
       return qs.stringify(res)
     }
   },
   watch: {
     query: {
       deep: true,
-      handler: debounce(function () {
-        this.fetchHouses()
-      }, 1000)
+      immediate: false,
+      handler() {
+        this.fetching = true
+        this.fetchHousesDebounce()
+      }
     }
   },
   methods: {
     fetchHouses() {
-      history.replaceState(null, null, location.origin + '?' + this.queryString)
       this.fetching = true
       axios.get('/api/houses?' + this.queryString)
-      .then(({ data }) => {
-        this.totalHouses = data.meta.total
-        this.houses = data.data
-      }).finally(() => this.fetching = false)
+        .then(({ data }) => {
+          history.replaceState(null, null, location.origin + '?' + this.queryString)
+          this.meta = data.meta
+          this.houses = data.data
+        })
+        .finally(() => this.fetching = false)
     },
-    applySorting({column, prop, order}) {
-      this.query.order_by = order ? prop : undefined
-      this.query.sort = this.query.order_by ? (order === 'descending' ? 'desc' : 'asc') : undefined
-
+    fetchHousesDebounce: debounce( function () {
       this.fetchHouses()
+    }, 500),
+    applySorting({column, prop, order}) {
+      this.query.order_by = order ? prop : ''
+      this.query.sort = this.query.order_by ? order : ''
     }
   },
   created () {
@@ -225,11 +236,11 @@ export default {
       if (name === 'page') {
         this.page = parseInt(value)
       } else if (name === 'per_page') {
-        this.query[name] = parseInt(value)
+        this.per_page = parseInt(value)
       } else if (name === 'price_from') {
-        this.query.price[0] = parseInt(value)
+        this.price[0] = parseInt(value)
       } else if (name === 'price_to') {
-        this.query.price[1] = parseInt(value)
+        this.price[1] = parseInt(value)
       } else {
         this.query[name] = value
       }

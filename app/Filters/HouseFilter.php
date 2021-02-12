@@ -8,7 +8,11 @@ class HouseFilter extends AbstractFilter
 {
     public function orderBy($value)
     {
-        $direction = $this->request->query('sort') === 'desc' ? 'DESC' : 'ASC';
+        $sort = $this->request->query('sort');
+
+        $direction = in_array($sort, ['desc', 'descending'])
+            ? 'DESC'
+            : 'ASC';
 
         if ($value) {
             return $this->builder->orderBy('name', $direction);
