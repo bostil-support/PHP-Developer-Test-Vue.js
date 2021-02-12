@@ -1,6 +1,6 @@
 # Test
 
-Git - https://github.com/stealthpro/bostil-test \
+Git - https://github.com/bostil-support/PHP-Developer-Test-Vue.js \
 Url - https://bostil-test.cf/
 
 ## Installation
